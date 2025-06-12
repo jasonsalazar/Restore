@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Product } from "../models/product";
 import Catalog from "../../features/catalog/Catalog";
+import { Container, Typography } from "@mui/material";
 
 function App() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,10 +26,10 @@ function App() {
     setProducts((prevProducts) => [...prevProducts, newProduct]);
   };
   return (
-    <div>
-      <h1>Re-store</h1>
+    <Container maxWidth="xl">
+      <Typography variant="h4">Re-store</Typography>
       <Catalog products={products} addProduct={addProduct} />
-    </div>
+    </Container>
   );
 }
 

@@ -1,10 +1,31 @@
 import { useEffect, useState } from "react";
 import type { Product } from "../models/product";
 import Catalog from "../../features/catalog/Catalog";
-import { Box, Button, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
+import NavBar from "./NavBar";
 
 function App() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
+  const palleteType = darkMode ? "dark" : "light";
+  const theme = createTheme({
+    palette: {
+      mode: palleteType,
+      background: {
+        default: palleteType === "dark" ? "#121212" : "#f5f5f5",
+      },
+    },
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   useEffect(() => {
     fetch("https://localhost:7078/api/products")
@@ -12,29 +33,24 @@ function App() {
       .then((data) => setProducts(data));
   }, []);
 
-  const addProduct = () => {
-    const newProduct: Product = {
-      id: products.length + 1,
-      name: `Product ${products.length + 1}`,
-      description: `Description for Product ${products.length + 1}`,
-      price: Math.floor(Math.random() * 100) + 50,
-      pictureUrl: "https://via.placeholder.com/150",
-      type: "Type A",
-      brand: "Brand X",
-      quantityInStock: Math.floor(Math.random() * 10) + 1,
-    };
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
-  };
   return (
-    <Container maxWidth="xl">
-      <Box display="flex" justifyContent="center" gap={3} marginY={3}>
-        <Typography variant="h4">Re-store</Typography>
-        <Button variant="contained" onClick={addProduct}>
-          Add Product
-        </Button>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <NavBar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+      <Box
+        sx={{
+          minHeight: "100vh",
+          background: darkMode
+            ? "radial-gradient(circle, #1e3aba, #111b27)"
+            : "radial-gradient(circle, #baecf9, #f0f9ff)",
+          paddingY: 6,
+        }}
+      >
+        <Container maxWidth="xl" sx={{ marginTop: 8 }}>
+          <Catalog products={products} />
+        </Container>
       </Box>
-      <Catalog products={products} />
-    </Container>
+    </ThemeProvider>
   );
 }
 

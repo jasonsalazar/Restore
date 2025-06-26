@@ -9,7 +9,7 @@ export const basketApi = createApi({
     fetchBasket: builder.query<Basket, void>({
       query: () => "basket",
     }),
-    addItemToBasket: builder.mutation<
+    addBasketItem: builder.mutation<
       Basket,
       { productId: number; quantity: number }
     >({
@@ -30,4 +30,4 @@ export const basketApi = createApi({
   }),
 });
 
-export const { useFetchBasketQuery } = basketApi;
+export const { useFetchBasketQuery, useAddBasketItemMutation } = basketApi;

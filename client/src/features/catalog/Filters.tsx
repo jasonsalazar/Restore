@@ -1,9 +1,8 @@
-import { Box, Paper, Typography } from "@mui/material";
-import { useFetchFiltersQuery } from "./catalogApi";
+import { Box, Button, Paper } from "@mui/material";
 import Search from "./Search";
 import RadioButtonGroup from "../../app/shared/components/RadioButtonGroup";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import { setBrands, setOrderBy, setTypes } from "./catalogSlice";
+import { resetParams, setBrands, setOrderBy, setTypes } from "./catalogSlice";
 import CheckboxButtons from "../../app/shared/components/CheckboxButtons";
 
 const sortOptions = [
@@ -12,12 +11,16 @@ const sortOptions = [
   { value: "price", label: "Price: Low to high" },
 ];
 
-export default function Filters() {
-  const { data } = useFetchFiltersQuery();
+interface Props {
+  filtersData: {
+    brands: string[];
+    types: string[];
+  };
+}
+
+export default function Filters({ filtersData: data }: Props) {
   const { orderBy, brands, types } = useAppSelector((state) => state.catalog);
   const dispatch = useAppDispatch();
-
-  if (!data?.brands || !data.types) return <Typography>Loading...</Typography>;
 
   return (
     <Box display="flex" flexDirection="column" gap={3}>
@@ -45,6 +48,14 @@ export default function Filters() {
           onChange={(items: string[]) => dispatch(setTypes(items))}
         />
       </Paper>
+      <Button
+        onClick={() => {
+          dispatch(resetParams());
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        Reset filters
+      </Button>
     </Box>
   );
 }

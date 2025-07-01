@@ -19,7 +19,12 @@ namespace Restore.Controllers
                 .Filter(productParams.Brands, productParams.Types)
                 .AsQueryable();
 
-            return await query.ToListAsync();
+            var products = await PagedList<Product>.ToPagedList(query,
+                productParams.PageNumber, productParams.PageSize);
+
+            Response.AddPaginationHeader(products.Metadata);
+
+            return products;
         }
 
         [HttpGet("{id}")]

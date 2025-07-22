@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Restore.Entities;
 
 namespace Restore.Data
@@ -11,13 +13,36 @@ namespace Restore.Data
 
             var context = scope.ServiceProvider.GetRequiredService<StoreContext>()
                 ?? throw new InvalidOperationException("Failed to retrieve store context");
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>()
+                ?? throw new InvalidOperationException("Failed to retrieve user manager");
 
-            SeedData(context);
+            _ = SeedData(context, userManager);
         }
 
-        private static void SeedData(StoreContext context)
+        private static async Task SeedData(StoreContext context, UserManager<User> userManager)
         {
             context.Database.Migrate();
+
+            if (!userManager.Users.Any())
+            {
+                var user = new User
+                {
+                    UserName = "bob@test.com",
+                    Email = "bob@test.com",
+                };
+
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+                var admin = new User
+                {
+                    UserName = "admin@test.com",
+                    Email = "admin@test.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, ["Member", "Admin"]);
+            }
 
             if (context.Products.Any()) return;
 

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using Restore.DTOs;
 using Restore.Entities;
 
@@ -11,6 +12,8 @@ namespace Restore.Extensions
             return new BasketDto
             {
                 BasketId = basket.BasketId,
+                ClientSecret = basket.ClientSecret,
+                PaymentIntentId = basket.PaymentIntentId,
                 Items = basket.Items.Select(x => new BasketItemDto
                 {
                     ProductId = x.ProductId,
@@ -22,6 +25,14 @@ namespace Restore.Extensions
                     Quantity = x.Quantity
                 }).ToList()
             };
+        }
+
+        public static async Task<Basket> GetBasketWithItems(this IQueryable<Basket> query, string? basketId)
+        {
+            return await query
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.BasketId == basketId) ?? throw new Exception("Cannot get basket");
         }
     }
 }

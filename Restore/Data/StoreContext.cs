@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Restore.Entities;
+using Restore.Entities.OrderAggregate;
 
 namespace Restore.Data
 {
@@ -10,6 +11,8 @@ namespace Restore.Data
         public required DbSet<Product> Products { get; set; }
 
         public required DbSet<Basket> Baskets { get; set; }
+
+        public required DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

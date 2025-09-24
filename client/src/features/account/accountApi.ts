@@ -1,10 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithErrorHandling } from "../../app/api/baseApi";
-import type { User } from "../../app/models/user";
+import type { Address, User } from "../../app/models/user";
 import type { LoginSchema } from "../../lib/schemas/loginSchema";
 import { router } from "../../app/routes/Routes";
 import { toast } from "react-toastify";
-import type { Address } from "@stripe/stripe-js";
 
 export const accountApi = createApi({
   reducerPath: "accountApi",
